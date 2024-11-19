@@ -31,13 +31,13 @@ const Login = () => {
       }
       console.log("Error: ", user, password);
     }
-
+// andres es gay
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <TextInput placeholder="Username" style={styles.input} value={user} onChangeText={setUser} />
       <TextInput placeholder="Password" secureTextEntry style={styles.input} value={password} onChangeText={setPassword} />
-      <TouchableOpacity  onPress={() => navigation.navigate("register")} >
+      <TouchableOpacity  onPress={() => navigation.navigate("Registro")} >
       <Text style={styles.title}>Registrar</Text>
       </TouchableOpacity>
       <TouchableOpacity  onPress={loginSend} >

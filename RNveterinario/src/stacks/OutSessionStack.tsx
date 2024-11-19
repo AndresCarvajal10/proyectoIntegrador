@@ -10,7 +10,7 @@ const OutSessionStack = () => {
   return (
     <StackNavigation.Navigator>
       <StackNavigation.Screen name='login' component={Login} />
-      <StackNavigation.Screen name='register' component={Registro} />
+      <StackNavigation.Screen name='Registro' component={Registro} />
     </StackNavigation.Navigator>
   )
 }
