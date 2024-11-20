@@ -13,9 +13,9 @@ const Main = () => {
     <>
       {
         authState.isLoggedIn ? 
-          <InSessionStack></InSessionStack>
+          <InSessionStack/>
         :
-          <OutSessionStack></OutSessionStack>
+          <OutSessionStack/>
 
       }
     </>

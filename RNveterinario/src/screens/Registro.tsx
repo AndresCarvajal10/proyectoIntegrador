@@ -7,9 +7,11 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } fro
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [confirmPassword, setConfirmPassword] = useState('');
- 
+   const disabledButton = (username != '' && password != '' && email != '' && confirmPassword != '') ? false : true;
+  
    // Función de validación y envío de datos
    const handleRegister = () => {
+
      if (!username || !email || !password || !confirmPassword) {
        Alert.alert('Error', 'Por favor, completa todos los campos.');
        return;
@@ -18,8 +20,36 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } fro
        Alert.alert('Error', 'Las contraseñas no coinciden.');
        return;
      }
+
+     const requestData = {
+      username,
+      email,
+      password,
+      
+    };
+    console.log(JSON.stringify(requestData)); 
+
      // Aquí puedes realizar la llamada a tu API para registrar al usuario
-     Alert.alert('Éxito', 'Usuario registrado correctamente');
+     fetch('https://871c-181-49-197-21.ngrok-free.app/integrador/register', {
+      method: 'POST', headers: {
+        'Content-Type': 'application/json', 
+      },
+      body: JSON.stringify(requestData), 
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error en la solicitud de registro');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        Alert.alert('Éxito', 'Usuario registrado correctamente');
+      })
+      .catch(error => {
+        console.error(error);
+        Alert.alert('Error', 'Ocurrió un error al registrar el usuario');
+      });
    };
 
   return (
@@ -66,7 +96,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } fro
         secureTextEntry
       />
       
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+      <TouchableOpacity disabled={disabledButton} style={[styles.button, {backgroundColor: disabledButton ? 'gray' : 'blue'}]}  onPress={handleRegister}>
         <Text style={styles.buttonText}>Registrar</Text>
       </TouchableOpacity>
     </View>
