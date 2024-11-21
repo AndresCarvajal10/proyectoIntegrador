@@ -1,79 +1,105 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
- const Registro = () => {
 
-   // Estados para manejar los valores del formulario
-   const [username, setUsername] = useState('');
-   const [email, setEmail] = useState('');
-   const [password, setPassword] = useState('');
-   const [confirmPassword, setConfirmPassword] = useState('');
-   const disabledButton = (username != '' && password != '' && email != '' && confirmPassword != '') ? false : true;
-  
-   // Función de validación y envío de datos
-   const handleRegister = () => {
+type RootStackParamList = {
+  login: undefined;
+  register: undefined;
+};
 
-     if (!username || !email || !password || !confirmPassword) {
-       Alert.alert('Error', 'Por favor, completa todos los campos.');
-       return;
-     }
-     if (password !== confirmPassword) {
-       Alert.alert('Error', 'Las contraseñas no coinciden.');
-       return;
-     }
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Registro'>
 
-     const requestData = {
+const Registro = () => {
+
+  const navigation = useNavigation<NavigationProps>(); 
+
+  const [nombre, setNombre] = useState('');
+  const [username, setUsername] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [email, setEmail] = useState('');
+  const [direccion, setDireccion] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [password, setPassword] = useState('');
+
+  const disabledButton = (
+    username !== '' && 
+    apellido !== '' && 
+    email !== '' && 
+    direccion !== '' && 
+    telefono !== '' && 
+    password !== ''
+  ) ? false : true;
+
+  const handleRegister = () => {
+    if (!username || !apellido || !email || !direccion || !telefono || !password) {
+      Alert.alert('Error', 'Por favor, completa todos los campos.');
+      return;
+    }
+
+
+    const requestData = {
       username,
+      nombre,
+      apellido,
       email,
+      direccion,
+      telefono,
       password,
-      
     };
-    console.log(JSON.stringify(requestData)); 
 
-     // Aquí puedes realizar la llamada a tu API para registrar al usuario
-     fetch('https://871c-181-49-197-21.ngrok-free.app/integrador/register', {
-      method: 'POST', headers: {
-        'Content-Type': 'application/json', 
+    console.log(JSON.stringify(requestData));
+
+    fetch('https://302b-190-99-252-240.ngrok-free.app/integrador/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestData), 
+      body: JSON.stringify(requestData),
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error('Error en la solicitud de registro');
         }
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         console.log(data);
-        Alert.alert('Éxito', 'Usuario registrado correctamente');
+        if(data.responseCode === "0000"){
+          Alert.alert('Éxito', 'Usuario registrado correctamente');
+          navigation.navigate("login")
+        }else{
+          Alert.alert('Error', 'Ha ocurrido un error al registrar el usuario');
+        }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
         Alert.alert('Error', 'Ocurrió un error al registrar el usuario');
       });
-   };
+  };
 
   return (
-
     <View style={styles.container}>
-     <Text style={styles.title}>
-      Registrate a la clinica veterinaria
-      </Text>     
-    <View style={styles.containerImage}>
-    {/* Imagen Local */}
-    <Image
-      source={require('../../assets/logo.png')}
-      style={styles.image}
-    />
-   
-   
-  </View>
-      
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre de usuario"
-        value={username}
-        onChangeText={setUsername}
-      />
+      <Text style={styles.title}>Regístrate en la clínica veterinaria</Text>
+      <View style={styles.containerImage}>
+        {/* Imagen Local */}
+        <Image source={require('../../assets/logo.png')} style={styles.image} />
+      </View>
+
+      <View style={styles.divRow}>
+        <TextInput
+          style={styles.inputDouble}
+          placeholder="Nombre"
+          value={nombre}
+          onChangeText={setNombre}
+        />
+        <TextInput
+          style={styles.inputDouble}
+          placeholder="Apellido"
+          value={apellido}
+          onChangeText={setApellido}
+        />
+      </View>
+
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
@@ -81,6 +107,29 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } fro
         onChangeText={setEmail}
         keyboardType="email-address"
       />
+
+      <View style={styles.divRow}>
+        <TextInput
+          style={styles.inputDouble}
+          placeholder="Dirección"
+          value={direccion}
+          onChangeText={setDireccion}
+        />
+        <TextInput
+          style={styles.inputDouble}
+          placeholder="Teléfono"
+          value={telefono}
+          onChangeText={setTelefono}
+        />
+      </View>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+      />
+
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
@@ -88,20 +137,15 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } fro
         onChangeText={setPassword}
         secureTextEntry
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirmar contraseña"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-      />
-      
-      <TouchableOpacity disabled={disabledButton} style={[styles.button, {backgroundColor: disabledButton ? 'gray' : 'blue'}]}  onPress={handleRegister}>
+
+      <TouchableOpacity
+        disabled={disabledButton}
+        style={[styles.button, { backgroundColor: disabledButton ? 'gray' : 'blue' }]}
+        onPress={handleRegister}
+      >
         <Text style={styles.buttonText}>Registrar</Text>
       </TouchableOpacity>
     </View>
-   
-
   );
 };
 
@@ -109,7 +153,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    // justifyContent: 'center',
     backgroundColor: '#fff',
   },
   title: {
@@ -117,7 +160,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    zIndex:1
+    zIndex: 1,
   },
   input: {
     height: 50,
@@ -139,7 +182,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-
   containerImage: {
     width: '100%',
     height: '30%',
@@ -152,7 +194,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     resizeMode: 'contain',
   },
+  divRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 20,
+  },
+  inputDouble: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    width: '47%',
+  },
 });
 
-
-export {Registro};
+export { Registro };

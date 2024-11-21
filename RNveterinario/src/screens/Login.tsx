@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthContext } from '../context/AuthContext';
@@ -18,21 +18,47 @@ const Login = () => {
     const {startSessionUser} = useContext(AuthContext);
 
 
-    const [user, setUser] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const disabledButton = (user != '' && password != '') ? false : true;
+    const disabledButton = (username != '' && password != '') ? false : true;
     const loginSend = () => {
-      if (user && password) {
-        // Fetch al backend.
-        if (user === "admin" && password === "123") {
-          startSessionUser();
-        }
-        
-      }
-      console.log("Error: ", user, password);
-    }
-// andres es gay
+      if (username && password) {
+        const requestData = {
+          username,
+          password,
+        };
+    
+        console.log(JSON.stringify(requestData));
+    
+        fetch('https://302b-190-99-252-240.ngrok-free.app/integrador/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Error en la solicitud de login');
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            if(data.responseCode === "0000"){
+                startSessionUser();
+            }else{
+              Alert.alert('Error', 'Ha ocurrido un error al loggear el usuario');
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            Alert.alert('Error', 'Ocurrió un error al loggear el usuario');
+          });
+      };  
+    }        
+      
   return (
     <View style={styles.container}>
 
@@ -47,7 +73,7 @@ const Login = () => {
   </View>
       <Text style={styles.title}>Login</Text>
       
-      <TextInput placeholder="Username" style={styles.input} value={user} onChangeText={setUser} />
+      <TextInput placeholder="Username" style={styles.input} value={username} onChangeText={setUsername} />
       <TextInput placeholder="Password" secureTextEntry style={styles.input} value={password} onChangeText={setPassword} />
       <View style={{alignItems: 'center'}}>
       <TouchableOpacity disabled={disabledButton} style={[styles.buttons, {backgroundColor: disabledButton ? 'gray' : 'blue'}]} onPress={loginSend} >
@@ -62,6 +88,7 @@ const Login = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
