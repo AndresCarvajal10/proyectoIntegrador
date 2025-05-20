@@ -1,20 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useContext } from 'react';
+import Navigation from './Navigation';
+import { OutSessionStack } from './src/stacks/OutSessionStack';
+import { NavigationContainer } from '@react-navigation/native';
+import { AuthContext, AuthContextProvider } from './src/context/AuthContext';
+import { InSessionStack } from './src/stacks/InSessionStack';
+import { Main } from './src/screens/Main';
 
 export default function App() {
+  
+
   return (
-    <View style={styles.container}>
-      <Text>¡Veterinario!</Text>
-      <StatusBar style="auto" />
-    </View>
+    // <Navigation></Navigation>
+    <NavigationContainer>
+      <AuthContextProvider>
+        <Main />
+      </AuthContextProvider>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
