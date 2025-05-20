@@ -8,33 +8,20 @@ import { Registro } from "./src/screens/Registro";
 const HomeStackNavigator = createNativeStackNavigator();
 const tab = createBottomTabNavigator();
 
-function MyStack(){
-    return(
-        <HomeStackNavigator.Navigator
-        initialRouteName="Registro" 
-        >
-            <HomeStackNavigator.Screen
-            name="Registro"
-            component={Registro}
-            />
-        </HomeStackNavigator.Navigator>
-    )
-
-}
-function MyTabs(){
-    return(
+function MyTabs() {
+    return (
         <tab.Navigator>
-            <tab.Screen name="Login" component={Login}/>
-            <tab.Screen name="Registro" component={Registro}/>
+            <tab.Screen name="Login" component={Login} />
+            <tab.Screen name="Registro" component={Registro} />
         </tab.Navigator>
     )
 }
 
-export default function Navigation(){
- return(
-    <NavigationContainer>
-    <MyTabs/>
-    </NavigationContainer>
- )
+export default function Navigation() {
+    return (
+        <NavigationContainer>
+            <MyTabs />
+        </NavigationContainer>
+    )
 
 }

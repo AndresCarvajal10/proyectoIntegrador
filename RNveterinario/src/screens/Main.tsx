@@ -12,14 +12,13 @@ const Main = () => {
   return (
     <>
       {
-        authState.isLoggedIn ? 
-          <InSessionStack/>
-        :
-          <OutSessionStack/>
-
+        authState.isLoggedIn ?
+          <OutSessionStack />
+          :
+          <InSessionStack />
       }
     </>
   )
 }
 
-export  { Main }
+export { Main }
