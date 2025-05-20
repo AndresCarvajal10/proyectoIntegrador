@@ -15,38 +15,38 @@ interface ClientData {
 const DetailAppointment = () => {
     const [data, setData] = useState<ClientData | null>(null);
 
-    useEffect(() => {
-        fetch('https://302b-190-99-252-240.ngrok-free.app/integrador/agendaCita/list?idClient=1', {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Error en la solicitud de registro');
-                }
-                return response.json();
-            })
-            .then((responseData) => {
-                if (responseData.responseCode === "0000") {
-                    setData(responseData.responseObj as ClientData);
-                } else {
-                    Alert.alert('Error', responseData.responseDesc || 'No se encontraron datos');
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-                Alert.alert('Error', 'Ocurrió un error al obtener los datos');
-            });
-    }, []);
+    // useEffect(() => {
+    //     fetch('https://302b-190-99-252-240.ngrok-free.app/integrador/agendaCita/list?idClient=1', {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //     })
+    //         .then((response) => {
+    //             if (!response.ok) {
+    //                 throw new Error('Error en la solicitud de registro');
+    //             }
+    //             return response.json();
+    //         })
+    //         .then((responseData) => {
+    //             if (responseData.responseCode === "0000") {
+    //                 setData(responseData.responseObj as ClientData);
+    //             } else {
+    //                 Alert.alert('Error', responseData.responseDesc || 'No se encontraron datos');
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //             Alert.alert('Error', 'Ocurrió un error al obtener los datos');
+    //         });
+    // }, []);
 
-    if (!data) {
-        return (
-            <View style={styles.loadingContainer}>
-                <Text style={styles.loadingText}>Cargando datos...</Text>
-            </View>
-        );
-    }
+    // if (!data) {
+    //     return (
+    //         <View style={styles.loadingContainer}>
+    //             <Text style={styles.loadingText}>Cargando datos...</Text>
+    //         </View>
+    //     );
+    // }
 
     return (
         <View style={{ flex: 1, padding: 20 }}>

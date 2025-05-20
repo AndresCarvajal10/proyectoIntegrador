@@ -1,17 +1,25 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home } from "../screens/Home";
-import { Consultar } from "../screens/Consultar";
+import { StackNavigation } from "./StackNavigation";
 
-const tab = createBottomTabNavigator();
+export type RootStackParamList = {
+    Home: undefined;
+    DetailAppointment: undefined;
+};
+
+const Tab = createBottomTabNavigator();
 
 const InSessionStack = () => {
-    return(
-        <tab.Navigator> 
-            <tab.Screen name="home" component={Home}/>
-            <tab.Screen name="consultar" component={Consultar}/>
-        </tab.Navigator>
-    )
-}
+    return (
+        <Tab.Navigator
+            detachInactiveScreens={false}
+            screenOptions={{
+                headerShown: false,
+            }}
+        >
+            <Tab.Screen name="Home" component={StackNavigation} />
+        </Tab.Navigator>
+    );
+};
 
-export { InSessionStack }
+export { InSessionStack };
