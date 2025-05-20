@@ -11,7 +11,7 @@ type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Registro'>
 
 const Registro = () => {
 
-  const navigation = useNavigation<NavigationProps>(); 
+  const navigation = useNavigation<NavigationProps>();
 
   const [nombre, setNombre] = useState('');
   const [username, setUsername] = useState('');
@@ -22,11 +22,11 @@ const Registro = () => {
   const [password, setPassword] = useState('');
 
   const disabledButton = (
-    username !== '' && 
-    apellido !== '' && 
-    email !== '' && 
-    direccion !== '' && 
-    telefono !== '' && 
+    username !== '' &&
+    apellido !== '' &&
+    email !== '' &&
+    direccion !== '' &&
+    telefono !== '' &&
     password !== ''
   ) ? false : true;
 
@@ -64,10 +64,10 @@ const Registro = () => {
       })
       .then((data) => {
         console.log(data);
-        if(data.responseCode === "0000"){
+        if (data.responseCode === "0000") {
           Alert.alert('Éxito', 'Usuario registrado correctamente');
           navigation.navigate("login")
-        }else{
+        } else {
           Alert.alert('Error', 'Ha ocurrido un error al registrar el usuario');
         }
       })
