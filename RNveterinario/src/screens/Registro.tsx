@@ -4,12 +4,9 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, Touc
 import FullScreenLoader from '../components/FullScreenLoanding';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Input from '../components/Input';
+import { RootStackParamList } from '../stacks/StackNavigation';
 
 
-type RootStackParamList = {
-  login: undefined;
-  register: undefined;
-};
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Registro'>
 

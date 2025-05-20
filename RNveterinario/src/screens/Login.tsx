@@ -6,19 +6,16 @@ import { AuthContext } from '../context/AuthContext';
 import Input from '../components/Input';
 import FullScreenLoader from '../components/FullScreenLoanding';
 import CustomAlert from '../components/CustomAlert';
+import { RootStackParamList } from '../stacks/StackNavigation';
 
-type RootStackParamList = {
-    login: undefined;
-    register: undefined;
-  };
-  
-  type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'login'>
+
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'login'>
 
 const Login = () => {
 
-    const navigation = useNavigation<NavigationProps>(); 
+  const navigation = useNavigation<NavigationProps>();
 
-    const {startSessionUser} = useContext(AuthContext);
+  const { startSessionUser } = useContext(AuthContext);
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -76,15 +73,15 @@ const Login = () => {
   return (
     <View style={styles.container}>
 
-  <View style={styles.containerImage}>
-    {/* Imagen Local */}
-    <Image
-      source={require('../../assets/logo-illustration.png')}
-      style={styles.image}
-    />
-   
-   
-  </View>
+      <View style={styles.containerImage}>
+        {/* Imagen Local */}
+        <Image
+          source={require('../../assets/logo-illustration.png')}
+          style={styles.image}
+        />
+
+
+      </View>
       <Text style={styles.title}>Login</Text>
 
        <Input
@@ -139,8 +136,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   pageNavigation: {
-    fontSize:14,
-    fontWeight:'500',
+    fontSize: 14,
+    fontWeight: '500',
     color: 'white',
     textAlign: 'center',
   },
