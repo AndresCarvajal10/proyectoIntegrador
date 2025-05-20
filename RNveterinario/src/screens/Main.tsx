@@ -1,4 +1,3 @@
-import { View, Text } from 'react-native'
 import React, { useContext } from 'react'
 import { AuthContext } from '../context/AuthContext';
 import { InSessionStack } from '../stacks/InSessionStack';
@@ -12,14 +11,13 @@ const Main = () => {
   return (
     <>
       {
-        authState.isLoggedIn ? 
-          <InSessionStack/>
-        :
-          <OutSessionStack/>
-
+        authState.isLoggedIn ?
+          <OutSessionStack />
+          :
+          <InSessionStack />
       }
     </>
   )
 }
 
-export  { Main }
+export { Main }

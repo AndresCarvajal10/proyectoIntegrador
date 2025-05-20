@@ -1,11 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+import { RootStackParamList } from '../stacks/OutSessionStack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-type RootStackParamList = {
-  login: undefined;
-  register: undefined;
-};
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Registro'>
 
