@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Alert, Text, StyleSheet } from 'react-native';
+import { View, Alert, Text, StyleSheet, ScrollView } from 'react-native';
 import { DataTable } from 'react-native-paper';
 
 interface ClientData {
@@ -13,119 +13,103 @@ interface ClientData {
 }
 
 const DetailAppointment = () => {
-    const [data, setData] = useState<ClientData | null>(null);
-
-    // useEffect(() => {
-    //     fetch('https://302b-190-99-252-240.ngrok-free.app/integrador/agendaCita/list?idClient=1', {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //     })
-    //         .then((response) => {
-    //             if (!response.ok) {
-    //                 throw new Error('Error en la solicitud de registro');
-    //             }
-    //             return response.json();
-    //         })
-    //         .then((responseData) => {
-    //             if (responseData.responseCode === "0000") {
-    //                 setData(responseData.responseObj as ClientData);
-    //             } else {
-    //                 Alert.alert('Error', responseData.responseDesc || 'No se encontraron datos');
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //             Alert.alert('Error', 'Ocurrió un error al obtener los datos');
-    //         });
-    // }, []);
-
-    // if (!data) {
-    //     return (
-    //         <View style={styles.loadingContainer}>
-    //             <Text style={styles.loadingText}>Cargando datos...</Text>
-    //         </View>
-    //     );
-    // }
+    
+        const servicio = {
+        fechaInicio: '2025-12-31',
+        horaInicio: '180000',
+        estado: 'Pendiente',
+        descripcion: 'consulta',
+        nombreVeterinario: 'Carlos Gómez',
+        infoMascota: {
+        idMascota: 1,
+        codigo: 'f8ffc6ce',
+        nombreMascota: 'Lupe',
+        tipoRaza: 'Labrador Retriever',
+        edad: 2,
+      genero: 'Hembra',
+    },
+    }
+  const formatHora = (hora: string) => {
+    return `${hora.substring(0, 2)}:${hora.substring(2, 4)}`;
+  };
 
     return (
-        <View style={{ flex: 1, padding: 20 }}>
-            <Text style={styles.headerText}>Detalles de la cita</Text>
+        <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Detalle del Servicio</Text>
 
-            <DataTable style={styles.table}>
-                <DataTable.Header style={styles.header}>
-                    <DataTable.Title >Campo</DataTable.Title>
-                    <DataTable.Title >Datos</DataTable.Title>
-                </DataTable.Header>
+      <View style={styles.card}>
+        <Text style={styles.label}>Fecha de Inicio:</Text>
+        <Text style={styles.value}>{servicio.fechaInicio}</Text>
 
-                <DataTable.Row style={styles.row}>
-                    <DataTable.Cell style={styles.cell}>Nombre</DataTable.Cell>
-                    <DataTable.Cell style={styles.cell}>Juan</DataTable.Cell>
-                </DataTable.Row>
-                <DataTable.Row style={styles.row}>
-                    <DataTable.Cell style={styles.cell}>Apellido</DataTable.Cell>
-                    <DataTable.Cell style={styles.cell}>Pérez</DataTable.Cell>
-                </DataTable.Row>
-                <DataTable.Row style={styles.row}>
-                    <DataTable.Cell style={styles.cell}>Dirección</DataTable.Cell>
-                    <DataTable.Cell style={styles.cell}>Calle Falsa 123</DataTable.Cell>
-                </DataTable.Row>
-                <DataTable.Row style={styles.row}>
-                    <DataTable.Cell style={styles.cell}>Teléfono</DataTable.Cell>
-                    <DataTable.Cell style={styles.cell}>+1234567890</DataTable.Cell>
-                </DataTable.Row>
-                <DataTable.Row style={styles.row}>
-                    <DataTable.Cell style={styles.cell}>Correo</DataTable.Cell>
-                    <DataTable.Cell style={styles.cell}>juan.perez@example.com</DataTable.Cell>
-                </DataTable.Row>
-                <DataTable.Row style={styles.row}>
-                    <DataTable.Cell style={styles.cell}>ID Cliente</DataTable.Cell>
-                    <DataTable.Cell style={styles.cell}>1</DataTable.Cell>
-                </DataTable.Row>
-                <DataTable.Row style={styles.row}>
-                    <DataTable.Cell style={styles.cell}>Usuario</DataTable.Cell>
-                    <DataTable.Cell style={styles.cell}>juanperez</DataTable.Cell>
-                </DataTable.Row>
-            </DataTable>
-        </View>
+        <Text style={styles.label}>Hora de Inicio:</Text>
+        <Text style={styles.value}>{formatHora(servicio.horaInicio)}</Text>
+
+        <Text style={styles.label}>Estado:</Text>
+        <Text style={styles.value}>{servicio.estado}</Text>
+
+        <Text style={styles.label}>Descripción:</Text>
+        <Text style={styles.value}>{servicio.descripcion}</Text>
+
+        <Text style={styles.label}>Veterinario:</Text>
+        <Text style={styles.value}>{servicio.nombreVeterinario}</Text>
+      </View>
+
+      <Text style={styles.title}>Información de la Mascota</Text>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>Nombre:</Text>
+        <Text style={styles.value}>{servicio.infoMascota.nombreMascota}</Text>
+
+        <Text style={styles.label}>Código:</Text>
+        <Text style={styles.value}>{servicio.infoMascota.codigo}</Text>
+
+        <Text style={styles.label}>Raza:</Text>
+        <Text style={styles.value}>{servicio.infoMascota.tipoRaza}</Text>
+
+        <Text style={styles.label}>Edad:</Text>
+        <Text style={styles.value}>{servicio.infoMascota.edad} años</Text>
+
+        <Text style={styles.label}>Género:</Text>
+        <Text style={styles.value}>{servicio.infoMascota.genero}</Text>
+      </View>
+
+      
+    </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
-    headerText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 20,
-    },
-    table: {
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
-        overflow: 'hidden',
-        backgroundColor: '#fff',
-    },
-    header: {
-        backgroundColor: '#007bff',
-    },
-    row: {
-        backgroundColor: '#f9f9f9',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-    },
-    cell: {
-        fontSize: 14,
-        paddingVertical: 10,
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    loadingText: {
-        fontSize: 16,
-        color: '#555',
-    },
+  container: {
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 12,
+    color: '#333',
+  },
+  card: {
+    backgroundColor: '#f5f5f5',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  label: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginTop: 8,
+    color: '#666',
+  },
+  value: {
+    fontSize: 16,
+    color: '#111',
+  },
 });
 
 export { DetailAppointment };

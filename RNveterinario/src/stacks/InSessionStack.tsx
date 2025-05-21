@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StackNavigation } from "./StackNavigation";
 import CreateAppointment from "../screens/CreateAppointment";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Login from "../screens/Login";
 
 
 export type RootStackParamList = {

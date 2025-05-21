@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -14,6 +14,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../stacks/InSessionStack';
 import { ListAppointment } from '../interfaces/ListAppointment';
 import { useHttpsCall } from '../hooks/useHttpsCall';
+import { AuthContext } from '../context/AuthContext';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -31,11 +32,12 @@ const Home = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   const { callServer } = useHttpsCall();
-
+  const { loginState } = useContext(AuthContext);
+  
   const getListAppointment = async () => {
     try {
       const response = await callServer<'', ListAppointment>(
-        '/integrador/agendaCita/list?idClient=3',
+        `/integrador/agendaCita/list?idClient=${loginState.idClient}`,
         null,
         'get'
       );
@@ -60,7 +62,7 @@ const Home = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>🐶 Bienvenido Erick</Text>
+        <Text style={styles.title}>🐶 Bienvenido {loginState.name}</Text>
         <Text style={styles.subtitle}>
           A continuación podrás ver tus próximas citas con los especialistas para tu mascota
         </Text>

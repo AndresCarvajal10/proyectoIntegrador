@@ -36,7 +36,7 @@ const AppointmentCard = ({ title, date, hour, image, action }: CardAppointmentPr
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#fff',
         borderRadius: 10,
         padding: 16,
         marginBottom: 16,
