@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthContext } from '../context/AuthContext';
-import Input from '../components/Input';
-import FullScreenLoader from '../components/FullScreenLoanding';
-import CustomAlert from '../components/CustomAlert';
+import Input from '../Components/Input';
+import FullScreenLoader from '../Components/FullScreenLoanding';
+import CustomAlert from '../Components/CustomAlert';
 import { RootStackParamList } from '../stacks/StackNavigation';
 
 
@@ -102,7 +102,7 @@ const Login = () => {
       />
       
       <View style={{alignItems: 'center'}}>
-      <TouchableOpacity disabled={disabledButton} style={[styles.buttons, {backgroundColor: disabledButton ? '#007bff' : 'blue'}]} onPress={loginSend} >
+      <TouchableOpacity disabled={disabledButton} style={[styles.buttons, {backgroundColor: disabledButton ? 'gray' : '#007bff'}]} onPress={loginSend} >
       <Text style={styles.pageNavigation}>Iniciar sesión</Text>
       </TouchableOpacity>
   
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttons:{
-    backgroundColor: 'rgba(17, 47, 216, 0.3)',
+    backgroundColor: '#007bff',
     width: '100%',
     height: 35,
     borderRadius: 8,

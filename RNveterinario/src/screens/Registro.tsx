@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, TouchableWithoutFeedback, ScrollView, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
-import FullScreenLoader from '../components/FullScreenLoanding';
+import FullScreenLoader from '../Components/FullScreenLoanding';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Input from '../components/Input';
+import Input from '../Components/Input';
 import { RootStackParamList } from '../stacks/StackNavigation';
+import CustomAlert from '../Components/CustomAlert';
 
 
 
@@ -22,6 +23,8 @@ const Registro = () => {
   const [telefono, setTelefono] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');   
   
 
   const disabledButton = (
@@ -72,12 +75,14 @@ const Registro = () => {
           Alert.alert('Éxito', 'Usuario registrado correctamente');
           navigation.navigate("login")
         } else {
-          Alert.alert('Error', 'Ha ocurrido un error al registrar el usuario');
+               setModalMessage('Ha ocurrido un error al registrar el usuario');
+              setModalVisible(true);
         }
       })
       .catch((error) => {
         console.error(error);
-        Alert.alert('Error', 'Ocurrió un error al registrar el usuario');
+          setModalMessage('Error de conexión. Intenta nuevamente.');
+          setModalVisible(true);
       })
       .finally(() => {
           setLoading(false); 
@@ -155,15 +160,26 @@ const Registro = () => {
 
       <TouchableOpacity
         disabled={disabledButton}
-        style={[styles.button, { backgroundColor: disabledButton ? 'gray' : 'blue' }]}
+        style={[styles.button, { backgroundColor: disabledButton ? 'gray' : '#007bff' }]}
         onPress={handleRegister}
       >
         <Text style={styles.buttonText}>Registrar</Text>
       </TouchableOpacity>
     </View>
+
+      <FullScreenLoader visible={loading}/>
+
+      
+       <CustomAlert
+        visible={modalVisible}
+        message={modalMessage}
+        onClose={() => setModalVisible(false)}
+      />
+
          </ScrollView>
     </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+      
   );
 };
 

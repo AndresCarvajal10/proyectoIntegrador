@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, Alert } from 'react-native';
-import { AppointmentCard } from '../components/AppointmentCard';
+import { AppointmentCard } from '../Components/AppointmentCard';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../stacks/InSessionStack';
@@ -40,20 +40,6 @@ const Home = () => {
   return (
     // <View style={styles.container}>
     //   <Text>Bienvenido</Text>
-    //   {data && Array.isArray(data) ? (
-    //     data.map((appointment, idx) => (
-    //       <AppointmentCard
-    //         key={idx}
-    //         title={appointment.title || 'Cita'}
-    //         date={appointment.date || ''}
-    //         hour={appointment.hour || ''}
-    //         image={require('../../assets/Cachorro.jpg')}
-    //         action={() => { navigation.navigate('DetailAppointment'); }}
-    //       />
-    //     ))
-    //   ) : (
-    //     <Text>No hay citas disponibles.</Text>
-    //   )}
     // </View>
 
     <View style={styles.container}>
