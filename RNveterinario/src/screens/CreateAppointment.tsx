@@ -7,8 +7,14 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
-  Button,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+
+const DOCTORS = [
+  { id: 1, name: 'Dra. Ana López' },
+  { id: 2, name: 'Dr. Carlos Pérez' },
+  { id: 3, name: 'Dra. María García' },
+];
 
 export default function CreateAppointment() {
   const [nombre, setNombre] = useState('');
@@ -16,16 +22,17 @@ export default function CreateAppointment() {
   const [tipo, setTipo] = useState('consulta');
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
+  const [selectedDoctor, setSelectedDoctor] = useState<number | null>(null);
 
   const tipos = ['consulta', 'vacuna', 'baño', 'urgencia'];
 
   const guardarCita = () => {
-    if (!nombre || !fecha || !hora) {
+    if (!nombre || !fecha || !hora || !selectedDoctor) {
       Alert.alert('Campos requeridos', 'Por favor completa los campos obligatorios.');
       return;
     }
 
-    const cita = { nombre, descripcion, tipo, fecha, hora };
+    const cita = { nombre, descripcion, tipo, fecha, hora, doctorId: selectedDoctor };
     console.log('Cita guardada:', cita);
     Alert.alert('¡Cita creada!', 'Tu cita fue registrada correctamente 🐶');
   };
@@ -48,6 +55,20 @@ export default function CreateAppointment() {
         onChangeText={setDescripcion}
         multiline
       />
+
+      <Text style={styles.label}>Doctor</Text>
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={selectedDoctor}
+          onValueChange={(itemValue) => setSelectedDoctor(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Selecciona un doctor..." value={null} />
+          {DOCTORS.map((doctor) => (
+            <Picker.Item key={doctor.id} label={doctor.name} value={doctor.id} />
+          ))}
+        </Picker>
+      </View>
 
       <Text style={styles.label}>Tipo de cita</Text>
       <View style={styles.tipoContainer}>
@@ -129,6 +150,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
     fontWeight: '600',
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: '#B2DFDB',
+    borderRadius: 8,
+    marginBottom: 20,
+    backgroundColor: '#fff',
+  },
+  picker: {
+    height: 50,
+    width: '100%',
   },
   tipoContainer: {
     flexDirection: 'row',
