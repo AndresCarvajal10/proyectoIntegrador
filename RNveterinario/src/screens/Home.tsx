@@ -51,13 +51,13 @@ const Home = () => {
     getListAppointment();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Cargando datos...</Text>
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View style={styles.loadingContainer}>
+  //       <Text style={styles.loadingText}>Cargando datos...</Text>
+  //     </View>
+  //   );
+  // }
 
   return (
     <View style={styles.container}>

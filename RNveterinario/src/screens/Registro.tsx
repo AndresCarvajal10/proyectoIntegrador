@@ -1,8 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
-import { RootStackParamList } from '../stacks/OutSessionStack';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, TouchableWithoutFeedback, ScrollView, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import FullScreenLoader from '../Components/FullScreenLoanding';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import Input from '../Components/Input';
+import { RootStackParamList } from '../stacks/StackNavigation';
+import CustomAlert from '../Components/CustomAlert';
+
 
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Registro'>
@@ -18,6 +22,10 @@ const Registro = () => {
   const [direccion, setDireccion] = useState('');
   const [telefono, setTelefono] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');   
+  
 
   const disabledButton = (
     username !== '' &&
@@ -45,9 +53,10 @@ const Registro = () => {
       password,
     };
 
+    setLoading(true);
     console.log(JSON.stringify(requestData));
 
-    fetch('https://302b-190-99-252-240.ngrok-free.app/integrador/register', {
+    fetch('https://07c2-181-49-197-21.ngrok-free.app/integrador/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,16 +75,28 @@ const Registro = () => {
           Alert.alert('Éxito', 'Usuario registrado correctamente');
           navigation.navigate("login")
         } else {
-          Alert.alert('Error', 'Ha ocurrido un error al registrar el usuario');
+               setModalMessage('Ha ocurrido un error al registrar el usuario');
+              setModalVisible(true);
         }
       })
       .catch((error) => {
         console.error(error);
-        Alert.alert('Error', 'Ocurrió un error al registrar el usuario');
-      });
+          setModalMessage('Error de conexión. Intenta nuevamente.');
+          setModalVisible(true);
+      })
+      .finally(() => {
+          setLoading(false); 
+      });;
   };
 
   return (
+  <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+  >
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+
     <View style={styles.container}>
       <Text style={styles.title}>Regístrate en la clínica veterinaria</Text>
       <View style={styles.containerImage}>
@@ -84,14 +105,14 @@ const Registro = () => {
       </View>
 
       <View style={styles.divRow}>
-        <TextInput
-          style={styles.inputDouble}
+        <Input
+          inputStyle={styles.inputDouble}
           placeholder="Nombre"
           value={nombre}
           onChangeText={setNombre}
         />
-        <TextInput
-          style={styles.inputDouble}
+        <Input
+          inputStyle={styles.inputDouble}
           placeholder="Apellido"
           value={apellido}
           onChangeText={setApellido}
@@ -107,43 +128,58 @@ const Registro = () => {
       />
 
       <View style={styles.divRow}>
-        <TextInput
-          style={styles.inputDouble}
+        <Input
+          inputStyle={styles.inputDouble}
           placeholder="Dirección"
           value={direccion}
           onChangeText={setDireccion}
+          lenght={30}
         />
-        <TextInput
-          style={styles.inputDouble}
+        <Input
+          inputStyle={styles.inputDouble}
           placeholder="Teléfono"
           value={telefono}
           onChangeText={setTelefono}
         />
       </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
+      <Input
+        inputStyle={styles.input}
+        placeholder="Usuario único"
         value={username}
         onChangeText={setUsername}
       />
 
-      <TextInput
-        style={styles.input}
+      <Input
+        inputStyle={styles.input}
         placeholder="Contraseña"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
+        security
       />
 
       <TouchableOpacity
         disabled={disabledButton}
-        style={[styles.button, { backgroundColor: disabledButton ? 'gray' : 'blue' }]}
+        style={[styles.button, { backgroundColor: disabledButton ? 'gray' : '#007bff' }]}
         onPress={handleRegister}
       >
         <Text style={styles.buttonText}>Registrar</Text>
       </TouchableOpacity>
     </View>
+
+      <FullScreenLoader visible={loading}/>
+
+      
+       <CustomAlert
+        visible={modalVisible}
+        message={modalMessage}
+        onClose={() => setModalVisible(false)}
+      />
+
+         </ScrollView>
+    </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+      
   );
 };
 
@@ -170,7 +206,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#007bff',
-    paddingVertical: 15,
+    paddingVertical: 10,
     borderRadius: 8,
     marginTop: 10,
   },

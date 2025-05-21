@@ -1,9 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthContext } from '../context/AuthContext';
-import { RootStackParamList } from '../stacks/OutSessionStack';
+import Input from '../components/Input';
+import FullScreenLoader from '../components/FullScreenLoanding';
+import CustomAlert from '../components/CustomAlert';
+import { RootStackParamList } from '../stacks/StackNavigation';
 
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'login'>
@@ -14,9 +17,12 @@ const Login = () => {
 
   const { startSessionUser } = useContext(AuthContext);
 
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
 
   const disabledButton = (username != '' && password != '') ? false : true;
   const loginSend = () => {
@@ -26,9 +32,11 @@ const Login = () => {
         password,
       };
 
+      setLoading(true);
+
       console.log(JSON.stringify(requestData));
 
-      fetch('https://302b-190-99-252-240.ngrok-free.app/integrador/login', {
+      fetch('https://07c2-181-49-197-21.ngrok-free.app/integrador/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,15 +54,21 @@ const Login = () => {
           if (data.responseCode === "0000") {
             startSessionUser();
           } else {
-            Alert.alert('Error', 'Ha ocurrido un error al loggear el usuario');
+            setModalMessage('Ha ocurrido un error al iniciar sesión');
+            setModalVisible(true);
           }
         })
         .catch((error) => {
           console.error(error);
-          Alert.alert('Error', 'Ocurrió un error al loggear el usuario');
+          setModalMessage('Error de conexión. Intenta nuevamente.');
+          setModalVisible(true);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     };
   }
+
 
   return (
     <View style={styles.container}>
@@ -70,18 +84,40 @@ const Login = () => {
       </View>
       <Text style={styles.title}>Login</Text>
 
-      <TextInput placeholder="Username" style={styles.input} value={username} onChangeText={setUsername} />
-      <TextInput placeholder="Password" secureTextEntry style={styles.input} value={password} onChangeText={setPassword} />
+      <Input
+        value={username}
+        onChangeText={setUsername}
+        inputStyle={styles.input}
+        placeholder="Username"
+        lenght={30}
+      />
+
+      <Input
+        value={password}
+        onChangeText={setPassword}
+        inputStyle={styles.input}
+        placeholder="Password"
+        security
+        lenght={15}
+      />
+
       <View style={{ alignItems: 'center' }}>
-        <TouchableOpacity disabled={disabledButton} style={[styles.buttons, { backgroundColor: disabledButton ? 'gray' : 'blue' }]} onPress={loginSend} >
-          <Text style={styles.pageNavigation}>Iniciar Sesión</Text>
+        <TouchableOpacity disabled={disabledButton} style={[styles.buttons, { backgroundColor: disabledButton ? 'gray' : '#007bff' }]} onPress={loginSend} >
+          <Text style={styles.pageNavigation}>Iniciar sesión</Text>
         </TouchableOpacity>
+
       </View>
-      <View style={{ width: '25%' }}>
-        <TouchableOpacity onPress={() => navigation.navigate("Registro")} >
-          <Text style={{ color: 'blue' }}>Registrar</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={() => navigation.navigate("Registro")} style={styles.buttons} >
+        <Text style={{ color: '#fff', textAlign: 'center' }}>Registrar</Text>
+      </TouchableOpacity>
+
+      <FullScreenLoader visible={loading} />
+
+      <CustomAlert
+        visible={modalVisible}
+        message={modalMessage}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };
@@ -114,12 +150,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttons: {
-    backgroundColor: 'blue',
+    backgroundColor: '#007bff',
     width: '100%',
     height: 35,
     borderRadius: 8,
     justifyContent: 'center',
-    marginBottom: 20
+    marginBottom: 10
   },
   image: {
     width: 300,

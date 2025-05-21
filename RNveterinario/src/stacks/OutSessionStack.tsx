@@ -2,6 +2,7 @@ import React from "react";
 import Login from '../screens/Login';
 import { Registro } from '../screens/Registro';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import CrearCitaScreen from "../screens/CreateAppointment";
 
 const StackNavigation = createNativeStackNavigator();
 
