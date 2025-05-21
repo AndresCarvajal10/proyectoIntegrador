@@ -9,55 +9,73 @@ import { useHttpsCall } from '../hooks/useHttpsCall';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
+type Appointment = {
+  agendaCitaId: number;
+  fechaInicio: string;
+  horaInicio: string;
+  estado: string;
+  descripcion: string;
+};
+
 const Home = () => {
   const navigation = useNavigation<NavigationProps>();
   const [loading, setLoading] = useState(true);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
 
-  // Hooks
   const { callServer } = useHttpsCall();
 
   const getListAppointment = async () => {
-
-
     try {
-      const response = await callServer<ListAppointment, ''>('/integrador/agendaCita/list?idClient=1', null, 'get');
-
-      console.log('Response: ', response);
-      if (response.response) {
-        const { responseBody } = response.response;
-        if (responseBody) {
+      const response = await callServer<'', ListAppointment>('/integrador/agendaCita/list?idClient=3', null, 'get');
+      if (response.response && response.response.responseCode === "0000") {
+        const { responseObj } = response.response;
+        if (Array.isArray(responseObj)) {
+          setAppointments(responseObj);
+        } else {
+          setAppointments([]);
         }
+      } else {
+        Alert.alert('Error', response.response?.responseDesc || 'No se encontraron datos');
+        setAppointments([]);
       }
     } catch (error) {
-      console.error(' Error al obtener la lista de citas', error);
+      console.error('Error al obtener la lista de citas', error);
+      Alert.alert('Error', 'Ocurrió un error al obtener los datos');
+      setAppointments([]);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     getListAppointment();
   }, []);
 
-  return (
-    // <View style={styles.container}>
-    //   <Text>Bienvenido</Text>
-    //   {data && Array.isArray(data) ? (
-    //     data.map((appointment, idx) => (
-    //       <AppointmentCard
-    //         key={idx}
-    //         title={appointment.title || 'Cita'}
-    //         date={appointment.date || ''}
-    //         hour={appointment.hour || ''}
-    //         image={require('../../assets/Cachorro.jpg')}
-    //         action={() => { navigation.navigate('DetailAppointment'); }}
-    //       />
-    //     ))
-    //   ) : (
-    //     <Text>No hay citas disponibles.</Text>
-    //   )}
-    // </View>
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Cargando datos...</Text>
+      </View>
+    );
+  }
 
+  return (
     <View style={styles.container}>
       <Text>Bienvenido</Text>
+      {appointments.length > 0 ? (
+        appointments.map((appointment, idx) => (
+          <AppointmentCard
+            key={appointment.agendaCitaId}
+            title={appointment.descripcion || 'Cita'}
+            date={appointment.fechaInicio}
+            hour={appointment.horaInicio ? appointment.horaInicio.slice(0, 2) + ':' + appointment.horaInicio.slice(2, 4) : ''}
+            image={require('../../assets/Cachorro.jpg')}
+            action={() => { navigation.navigate('DetailAppointment'); }}
+          />
+        ))
+      ) : (
+        <Text>No hay citas disponibles.</Text>
+      )}
     </View>
   );
 };
