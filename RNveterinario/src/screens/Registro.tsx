@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, TouchableWithoutFeedback, ScrollView, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
-import FullScreenLoader from '../Components/FullScreenLoanding';
+import FullScreenLoader from '../components/FullScreenLoanding';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Input from '../Components/Input';
-import { RootStackParamList } from '../stacks/StackNavigation';
-import CustomAlert from '../Components/CustomAlert';
+import Input from '../components/Input';
+import CustomAlert from '../components/CustomAlert';
+import { RootStackParamList } from '../stacks/OutSessionStack';
 
 
 
@@ -24,8 +24,8 @@ const Registro = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');   
-  
+  const [modalMessage, setModalMessage] = useState('');
+
 
   const disabledButton = (
     username !== '' &&
@@ -73,142 +73,154 @@ const Registro = () => {
         console.log(data);
         if (data.responseCode === "0000") {
           Alert.alert('Éxito', 'Usuario registrado correctamente');
-          navigation.navigate("login")
+          navigation.navigate("Login")
         } else {
-               setModalMessage('Ha ocurrido un error al registrar el usuario');
-              setModalVisible(true);
+          setModalMessage('Ha ocurrido un error al registrar el usuario');
+          setModalVisible(true);
         }
       })
       .catch((error) => {
         console.error(error);
-          setModalMessage('Error de conexión. Intenta nuevamente.');
-          setModalVisible(true);
+        setModalMessage('Error de conexión. Intenta nuevamente.');
+        setModalVisible(true);
       })
       .finally(() => {
-          setLoading(false); 
+        setLoading(false);
       });;
   };
 
   return (
-  <KeyboardAvoidingView
-    style={{ flex: 1 }}
-    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-  >
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 
-    <View style={styles.container}>
-      <Text style={styles.title}>Regístrate en la clínica veterinaria</Text>
-      <View style={styles.containerImage}>
-        {/* Imagen Local */}
-        <Image source={require('../../assets/logo.png')} style={styles.image} />
-      </View>
+          <View style={styles.container}>
+            <Text style={styles.title}>Regístrate en la clínica veterinaria</Text>
+            <View style={styles.containerImage}>
+              {/* Imagen Local */}
+              <Image source={require('../../assets/logo.png')} style={styles.image} />
+            </View>
 
-      <View style={styles.divRow}>
-        <Input
-          inputStyle={styles.inputDouble}
-          placeholder="Nombre"
-          value={nombre}
-          onChangeText={setNombre}
-        />
-        <Input
-          inputStyle={styles.inputDouble}
-          placeholder="Apellido"
-          value={apellido}
-          onChangeText={setApellido}
-        />
-      </View>
+            <View style={styles.divRow}>
+              <Input
+                inputStyle={styles.inputDouble}
+                placeholder="Nombre"
+                value={nombre}
+                onChangeText={setNombre}
+              />
+              <Input
+                inputStyle={styles.inputDouble}
+                placeholder="Apellido"
+                value={apellido}
+                onChangeText={setApellido}
+              />
+            </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
+            <TextInput
+              style={styles.input}
+              placeholder="Correo electrónico"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
 
-      <View style={styles.divRow}>
-        <Input
-          inputStyle={styles.inputDouble}
-          placeholder="Dirección"
-          value={direccion}
-          onChangeText={setDireccion}
-          lenght={30}
-        />
-        <Input
-          inputStyle={styles.inputDouble}
-          placeholder="Teléfono"
-          value={telefono}
-          onChangeText={setTelefono}
-        />
-      </View>
+            <View style={styles.divRow}>
+              <Input
+                inputStyle={styles.inputDouble}
+                placeholder="Dirección"
+                value={direccion}
+                onChangeText={setDireccion}
+                lenght={30}
+              />
+              <Input
+                inputStyle={styles.inputDouble}
+                placeholder="Teléfono"
+                value={telefono}
+                onChangeText={setTelefono}
+              />
+            </View>
 
-      <Input
-        inputStyle={styles.input}
-        placeholder="Usuario único"
-        value={username}
-        onChangeText={setUsername}
-      />
+            <Input
+              inputStyle={styles.input}
+              placeholder="Usuario único"
+              value={username}
+              onChangeText={setUsername}
+            />
 
-      <Input
-        inputStyle={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        security
-      />
+            <Input
+              inputStyle={styles.input}
+              placeholder="Contraseña"
+              value={password}
+              onChangeText={setPassword}
+              security
+            />
 
-      <TouchableOpacity
-        disabled={disabledButton}
-        style={[styles.button, { backgroundColor: disabledButton ? 'gray' : '#007bff' }]}
-        onPress={handleRegister}
-      >
-        <Text style={styles.buttonText}>Registrar</Text>
-      </TouchableOpacity>
-    </View>
+            <TouchableOpacity
+              disabled={disabledButton}
+              style={[styles.button, { backgroundColor: disabledButton ? 'gray' : '#007bff' }]}
+              onPress={handleRegister}
+            >
+              <Text style={styles.buttonText}>Registrar</Text>
+            </TouchableOpacity>
+          </View>
 
-      <FullScreenLoader visible={loading}/>
+          <FullScreenLoader visible={loading} />
 
-      
-       <CustomAlert
-        visible={modalVisible}
-        message={modalMessage}
-        onClose={() => setModalVisible(false)}
-      />
 
-         </ScrollView>
-    </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-      
+          <CustomAlert
+            visible={modalVisible}
+            message={modalMessage}
+            onClose={() => setModalVisible(false)}
+          />
+
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 24,
+    backgroundColor: '#F2FFF5',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    zIndex: 1,
+    color: '#2E7D32',
   },
   input: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: '#B2DFDB',
     borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 10,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    marginBottom: 16,
+  },
+  inputDouble: {
+    height: 50,
+    borderColor: '#B2DFDB',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    marginBottom: 16,
+    width: '47%',
   },
   button: {
-    backgroundColor: '#007bff',
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginTop: 10,
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 12,
   },
   buttonText: {
     color: '#fff',
@@ -217,31 +229,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   containerImage: {
-    width: '100%',
-    height: '30%',
-    justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 16,
   },
   image: {
-    width: 300,
-    height: 200,
-    marginBottom: 10,
+    width: 260,
+    height: 180,
     resizeMode: 'contain',
   },
   divRow: {
-    display: 'flex',
     flexDirection: 'row',
-    gap: 20,
-  },
-  inputDouble: {
-    height: 50,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    width: '47%',
+    justifyContent: 'space-between',
   },
 });
+
 
 export { Registro };

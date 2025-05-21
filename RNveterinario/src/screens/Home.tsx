@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, Alert } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Alert,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import { AppointmentCard } from '../components/AppointmentCard';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -26,21 +34,19 @@ const Home = () => {
 
   const getListAppointment = async () => {
     try {
-      const response = await callServer<'', ListAppointment>('/integrador/agendaCita/list?idClient=3', null, 'get');
-      if (response.response && response.response.responseCode === "0000") {
+      const response = await callServer<'', ListAppointment>(
+        '/integrador/agendaCita/list?idClient=3',
+        null,
+        'get'
+      );
+      if (response.response && response.response.responseCode === '0000') {
         const { responseObj } = response.response;
-        if (Array.isArray(responseObj)) {
-          setAppointments(responseObj);
-        } else {
-          setAppointments([]);
-        }
+        setAppointments(Array.isArray(responseObj) ? responseObj : []);
       } else {
-        Alert.alert('Error', response.response?.responseDesc || 'No se encontraron datos');
         setAppointments([]);
       }
     } catch (error) {
       console.error('Error al obtener la lista de citas', error);
-      Alert.alert('Error', 'Ocurrió un error al obtener los datos');
       setAppointments([]);
     } finally {
       setLoading(false);
@@ -51,48 +57,103 @@ const Home = () => {
     getListAppointment();
   }, []);
 
-  // if (loading) {
-  //   return (
-  //     <View style={styles.loadingContainer}>
-  //       <Text style={styles.loadingText}>Cargando datos...</Text>
-  //     </View>
-  //   );
-  // }
-
   return (
-    <View style={styles.container}>
-      <Text>Bienvenido</Text>
-      {appointments.length > 0 ? (
-        appointments.map((appointment, idx) => (
-          <AppointmentCard
-            key={appointment.agendaCitaId}
-            title={appointment.descripcion || 'Cita'}
-            date={appointment.fechaInicio}
-            hour={appointment.horaInicio ? appointment.horaInicio.slice(0, 2) + ':' + appointment.horaInicio.slice(2, 4) : ''}
-            image={require('../../assets/Cachorro.jpg')}
-            action={() => { navigation.navigate('DetailAppointment'); }}
-          />
-        ))
-      ) : (
-        <Text>No hay citas disponibles.</Text>
-      )}
-    </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>🐶 Bienvenido Erick</Text>
+        <Text style={styles.subtitle}>
+          A continuación podrás ver tus próximas citas con los especialistas para tu mascota
+        </Text>
+      </View>
+      <View style={{ padding: 24 }}>
+
+        {appointments.length > 0 ? (
+          appointments.map((appointment) => (
+            <AppointmentCard
+              key={appointment.agendaCitaId}
+              title={appointment.descripcion || 'Cita'}
+              date={appointment.fechaInicio}
+              hour={
+                appointment.horaInicio
+                  ? `${appointment.horaInicio.slice(0, 2)}:${appointment.horaInicio.slice(2, 4)}`
+                  : ''
+              }
+              image={require('../../assets/Cachorro.png')}
+              action={() => navigation.navigate('DetailAppointment')}
+            />
+          ))
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No tienes citas agendadas</Text>
+            <Image
+              source={require('../../assets/empty_appointments.png')}
+              style={styles.illustration}
+              resizeMode="contain"
+            />
+            <TouchableOpacity
+              style={styles.boton}
+              onPress={() => navigation.navigate('CreateAppointment')}
+            >
+              <Text style={styles.botonTexto}>Agendar nueva cita</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#F2FFF5',
+    marginTop: 24,
   },
-  loadingContainer: {
-    flex: 1,
+  header: {
+    backgroundColor: '#F2FFF5',
+    padding: 24,
+    borderBottomColor: '#B2DFDB',
+    borderBottomWidth: 1,
+
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2E7D32',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#388E3C',
+  },
+  emptyContainer: {
+    padding: 24,
+    alignItems: 'center',
     justifyContent: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#388E3C',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  illustration: {
+    width: 250,
+    height: 200,
+    marginBottom: 24,
+  },
+  boton: {
+    backgroundColor: '#43A047',
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 10,
+    marginTop: 70,
     alignItems: 'center',
   },
-  loadingText: {
-    fontSize: 18,
+  botonTexto: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

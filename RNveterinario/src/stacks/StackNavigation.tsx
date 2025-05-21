@@ -4,7 +4,6 @@ import { Home } from "../screens/Home";
 import { DetailAppointment } from "../screens/DetailAppointment";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const tab = createBottomTabNavigator();
 
 const Stack = createNativeStackNavigator();
 

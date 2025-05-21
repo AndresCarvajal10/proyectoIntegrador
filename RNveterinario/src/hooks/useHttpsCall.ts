@@ -12,7 +12,7 @@ export const useHttpsCall = () => {
     let error: AxiosError | null = null;
 
     // Temporalmente manejamos 2 ips. La de microservicios se envia quemada en url por esta razón se condiciona de esta manera. 
-    const temporalyUrl = 'https://07c2-181-49-197-21.ngrok-free.app' + url;
+    const temporalyUrl = 'https://4e70-181-49-197-21.ngrok-free.app' + url;
     console.log("COMPLETE URL: ", temporalyUrl);
 
     try {

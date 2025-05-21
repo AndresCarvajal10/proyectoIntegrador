@@ -32,7 +32,7 @@ export default function CreateAppointment() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.titulo}>🐾 Crear cita veterinaria</Text>
+      <Text style={styles.titulo}>🐾 Agendar cita veterinaria</Text>
 
       <TextInput
         style={styles.input}
@@ -79,7 +79,7 @@ export default function CreateAppointment() {
       />
 
       <TouchableOpacity style={styles.boton} onPress={guardarCita}>
-        <Text style={styles.botonTexto}>💾 Crear cita</Text>
+        <Text style={styles.botonTexto}>💾 Agendar cita</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 26,
     fontWeight: 'bold',
+    width: '100%',
     marginBottom: 20,
     color: '#2E7D32',
     textAlign: 'center',
