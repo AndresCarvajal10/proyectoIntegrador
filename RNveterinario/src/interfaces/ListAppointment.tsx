@@ -11,3 +11,26 @@ interface ResponseObj {
     estado: string;
     descripcion: string;
 }
+
+export interface DataLoginResponse {
+    responseCode: string;
+    responseDesc: string;
+    responseObj: ResponseObj;
+}
+
+interface ResponseObj {
+    idClient: string;
+    name: string;
+    lastName: string;
+    addres: string;
+    phone: string;
+    email: string;
+    phoemailne: string;
+}
+
+export interface CreateAppointmentResponse {
+    responseCode: string;
+    responseDesc: string;
+    responseObj: boolean;
+}
+

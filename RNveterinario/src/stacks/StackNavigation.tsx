@@ -1,5 +1,4 @@
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home } from "../screens/Home";
 import { DetailAppointment } from "../screens/DetailAppointment";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";

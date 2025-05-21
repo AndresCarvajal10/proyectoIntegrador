@@ -18,47 +18,27 @@ type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const Login = () => {
   const navigation = useNavigation<NavigationProps>();
-  const { startSessionUser } = useContext(AuthContext);
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const { login } = useContext(AuthContext);
+
 
   const disabledButton = !(username && password);
 
-  const loginSend = () => {
+  const loginSend = async () => {
     if (!disabledButton) {
-      const requestData = { username, password };
-
       setLoading(true);
-
-      fetch('https://07c2-181-49-197-21.ngrok-free.app/integrador/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestData),
-      })
-        .then((response) => {
-          if (!response.ok) throw new Error('Error en la solicitud de login');
-          return response.json();
-        })
-        .then((data) => {
-          if (data.responseCode === '0000') {
-            startSessionUser();
-          } else {
-            setModalMessage('Ha ocurrido un error al iniciar sesión');
-            setModalVisible(true);
-          }
-        })
-        .catch(() => {
-          setModalMessage('Error de conexión. Intenta nuevamente.');
-          setModalVisible(true);
-        })
-        .finally(() => setLoading(false));
-    }
-  };
-
+    await login(username, password, (msg) => {
+      setModalMessage(msg);
+      setModalVisible(true);
+    });
+    setLoading(false);
+    };
+  }
   return (
     <View style={styles.container}>
       <View style={styles.containerImage}>

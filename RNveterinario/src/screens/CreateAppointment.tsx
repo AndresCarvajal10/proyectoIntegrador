@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { useHttpsCall } from '../hooks/useHttpsCall';
 import {
   View,
   Text,
@@ -9,6 +10,20 @@ import {
   ScrollView,
   Button,
 } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
+import { CreateAppointmentResponse } from '../interfaces/ListAppointment';
+import CustomAlert from '../components/CustomAlert';
+import FullScreenLoader from '../components/FullScreenLoanding';
+
+
+type dataCreateAppointment = {
+  estadoId: number;
+  clienteId: number;
+  medicoId: number;
+  description: string;
+  fecha: string;
+  hora: string
+};
 
 export default function CreateAppointment() {
   const [nombre, setNombre] = useState('');
@@ -16,18 +31,61 @@ export default function CreateAppointment() {
   const [tipo, setTipo] = useState('consulta');
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
+  const [loanding, setLoanding] = useState(false);
+  const { callServer } = useHttpsCall();
+  const tipos = ['Consulta', 'Vacuna', 'Baño', 'Urgencia'];
+  const { loginState } = useContext(AuthContext);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  
 
-  const tipos = ['consulta', 'vacuna', 'baño', 'urgencia'];
-
-  const guardarCita = () => {
+  const guardarCita = async () => {
     if (!nombre || !fecha || !hora) {
       Alert.alert('Campos requeridos', 'Por favor completa los campos obligatorios.');
       return;
     }
 
-    const cita = { nombre, descripcion, tipo, fecha, hora };
-    console.log('Cita guardada:', cita);
-    Alert.alert('¡Cita creada!', 'Tu cita fue registrada correctamente 🐶');
+    setLoanding(true)
+
+    try{
+
+         const requestData: dataCreateAppointment = { 
+          estadoId: 1,
+          clienteId: Number(loginState.idClient),
+          medicoId: 1,
+          description: tipo,
+          fecha,
+          hora
+          };
+
+        const { response } = await callServer<dataCreateAppointment, CreateAppointmentResponse>(
+        `/integrador/agendaCita/scheduleAnAppointment`,
+        requestData,
+        'post'
+      );
+      console.log(response)
+      if (response?.responseCode === '0000') {
+
+        console.log('Cita guardada:', requestData);
+        setModalMessage("Se creó la cita correctamente 🐶")
+        setModalVisible(true)
+        setLoanding(false) 
+
+      }else{
+       setModalMessage("Ocurrió un problema al crear la cita, intenta de nuevo")
+       setModalVisible(true)
+       setLoanding(false)  
+      }
+
+    }catch(error){
+      setLoanding(false)
+      setModalMessage("Ocurrió un problema al crear la cita, intenta más tarde")
+      setModalVisible(true)
+
+    } finally{ 
+      setLoanding(false)
+    }
+
   };
 
   return (
@@ -69,6 +127,8 @@ export default function CreateAppointment() {
         placeholder="Fecha (YYYY-MM-DD) *"
         value={fecha}
         onChangeText={setFecha}
+        keyboardType='phone-pad'
+        maxLength={8}
       />
 
       <TextInput
@@ -76,11 +136,20 @@ export default function CreateAppointment() {
         placeholder="Hora (HH:MM, 24h) *"
         value={hora}
         onChangeText={setHora}
+        keyboardType='phone-pad'
+        maxLength={8}
       />
 
       <TouchableOpacity style={styles.boton} onPress={guardarCita}>
         <Text style={styles.botonTexto}>💾 Agendar cita</Text>
       </TouchableOpacity>
+      <FullScreenLoader visible={loanding}/>
+
+      <CustomAlert
+        visible={modalVisible}
+        message={modalMessage}
+        onClose={() => setModalVisible(false)}
+      />
     </ScrollView>
   );
 }
@@ -91,10 +160,10 @@ function capitalizar(str: String) {
 
 function tipoEmoji(tipo: String) {
   switch (tipo) {
-    case 'consulta': return '🩺';
-    case 'vacuna': return '💉';
-    case 'baño': return '🛁';
-    case 'urgencia': return '🚨';
+    case 'Consulta': return '🩺';
+    case 'Vacuna': return '💉';
+    case 'Baño': return '🛁';
+    case 'Urgencia': return '🚨';
     default: return '🐾';
   }
 }
