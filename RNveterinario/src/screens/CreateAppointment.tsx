@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHttpsCall } from '../hooks/useHttpsCall';
 import {
   View,
@@ -14,8 +14,10 @@ import { AuthContext } from '../context/AuthContext';
 import { CreateAppointmentResponse } from '../interfaces/ListAppointment';
 import CustomAlert from '../components/CustomAlert';
 import FullScreenLoader from '../components/FullScreenLoanding';
+import { ResponseDataGeneric } from '../interfaces/DataGeneric';
+import { ResponseListPetties } from '../interfaces/ListPetties';
 
-const DOCTORS = [
+const MASCOTA = [
   { id: 1, name: 'Dra. Ana López' },
   { id: 2, name: 'Dr. Carlos Pérez' },
   { id: 3, name: 'Dra. María García' },
@@ -25,6 +27,7 @@ const DOCTORS = [
 type dataCreateAppointment = {
   estadoId: number;
   clienteId: number;
+  mascotaId: number
   medicoId: number;
   description: string;
   fecha: string;
@@ -38,12 +41,16 @@ export default function CreateAppointment() {
   const [fecha, setFecha] = useState('');
   const [hora, setHora] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState<number | null>(null);
+  const [selectedPet, setSelectedPet] = useState<number | null>(null);
   const [loanding, setLoanding] = useState(false);
   const { callServer } = useHttpsCall();
   const tipos = ['Consulta', 'Vacuna', 'Baño', 'Urgencia'];
   const { loginState } = useContext(AuthContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [veterinarios, setVeterinarios] = useState<{ idVeterinarian: number; nombre: string }[]>([]);
+  const [listPetties, setListPetties] = useState<{ idMascota: number; nombreMascota: string }[]>([]);
+
 
 
   const guardarCita = async () => {
@@ -51,19 +58,21 @@ export default function CreateAppointment() {
       Alert.alert('Campos requeridos', 'Por favor completa los campos obligatorios.');
       return;
     }
-
+    
     setLoanding(true)
 
     try {
 
       const requestData: dataCreateAppointment = {
-        estadoId: 1,
-        clienteId: Number(loginState.idClient),
-        medicoId: 1,
-        description: tipo,
-        fecha,
-        hora
-      };
+      estadoId: 1,
+      clienteId: Number(loginState.idClient),
+      medicoId: selectedDoctor ?? 0,
+      description: tipo,
+      mascotaId: selectedPet ?? 0,
+      fecha,
+      hora
+};
+
 
       const { response } = await callServer<dataCreateAppointment, CreateAppointmentResponse>(
         `/integrador/agendaCita/scheduleAnAppointment`,
@@ -95,6 +104,57 @@ export default function CreateAppointment() {
 
   };
 
+  const veterinarioMascotas = async () => {
+  setLoanding(true);
+
+  try {
+    const { response } = await callServer<'', ResponseDataGeneric>(
+      `/integrador/selectors/All?idClient=${Number(loginState.idClient)}`,
+      null,
+      'get'
+    );
+
+    if (response?.responseCode === '0000') {
+      setVeterinarios(response.responseObj.selectorVeterinarians);
+    } else {
+    setLoanding(false);
+
+    }
+  } catch (error) {
+    console.log('error al listar doctores',error)
+  } finally {
+    setLoanding(false);
+  }
+};
+
+  const listaMascotas = async () => {
+  setLoanding(true);
+
+  try {
+    const { response } = await callServer<'', ResponseListPetties>(
+      `/integrador/pets/getListPets?idClient=${Number(loginState.idClient)}`,
+      null,
+      'get'
+    );
+
+    if (response?.responseCode === '0000') {
+      setListPetties(response.responseObj);
+    } else {
+          setLoanding(false);
+
+    }
+  } catch (error) {
+    console.log('error al listar mascotas',error)
+  } finally {
+    setLoanding(false);
+  }
+};
+
+  useEffect(() => {
+  veterinarioMascotas()
+  listaMascotas();
+  }, [])
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.titulo}>🐾 Agendar cita veterinaria</Text>
@@ -114,19 +174,35 @@ export default function CreateAppointment() {
         multiline
       />
 
-      <Text style={styles.label}>Doctor</Text>
+      <Text style={styles.label}>Mascota</Text>
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={selectedPet}
+          onValueChange={(itemValue) => setSelectedPet(itemValue)}
+          style={styles.picker}
+        >
+          <Picker.Item label="Selecciona una mascota" value={null} />
+          {listPetties.map((pet) => (
+            <Picker.Item key={pet.idMascota} label={pet.nombreMascota} value={pet.idMascota} />
+          ))}
+        </Picker>
+      </View>
+
+
+      <Text style={styles.label}>Veterinario</Text>
       <View style={styles.pickerContainer}>
         <Picker
           selectedValue={selectedDoctor}
           onValueChange={(itemValue) => setSelectedDoctor(itemValue)}
           style={styles.picker}
         >
-          <Picker.Item label="Selecciona un doctor..." value={null} />
-          {DOCTORS.map((doctor) => (
-            <Picker.Item key={doctor.id} label={doctor.name} value={doctor.id} />
+          <Picker.Item label="Selecciona un veterinario" value={null} />
+          {veterinarios.map((vet) => (
+            <Picker.Item key={vet.idVeterinarian} label={vet.nombre} value={vet.idVeterinarian} />
           ))}
         </Picker>
       </View>
+
 
       <Text style={styles.label}>Tipo de cita</Text>
       <View style={styles.tipoContainer}>
