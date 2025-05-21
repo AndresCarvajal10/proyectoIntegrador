@@ -15,6 +15,8 @@ import { RootStackParamList } from '../stacks/InSessionStack';
 import { ListAppointment } from '../interfaces/ListAppointment';
 import { useHttpsCall } from '../hooks/useHttpsCall';
 import { AuthContext } from '../context/AuthContext';
+import { CustomTitle } from '../components/CustomTitle';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -32,8 +34,8 @@ const Home = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
 
   const { callServer } = useHttpsCall();
-  const { loginState } = useContext(AuthContext);
-  
+  const { loginState, finishSesionUser } = useContext(AuthContext);
+
   const getListAppointment = async () => {
     try {
       const response = await callServer<'', ListAppointment>(
@@ -55,6 +57,11 @@ const Home = () => {
     }
   };
 
+  const logoutApp = () => {
+    finishSesionUser();
+  }
+
+
   useEffect(() => {
     getListAppointment();
   }, []);
@@ -62,13 +69,17 @@ const Home = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>🐶 Bienvenido {loginState.name}</Text>
-        <Text style={styles.subtitle}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <CustomTitle title={`🐶 Bienvenido  ${loginState.name}`} />
+          <TouchableOpacity style={{ padding: 10, alignContent: "center" }} onPress={logoutApp}>
+            <Ionicons name="exit-outline" size={24} color="#e75d5d" style={{ alignContent: "center" }} />
+          </TouchableOpacity>
+        </View>
+        <Text style={[styles.subtitle]}>
           A continuación podrás ver tus próximas citas con los especialistas para tu mascota
         </Text>
       </View>
       <View style={{ padding: 24 }}>
-
         {appointments.length > 0 ? (
           appointments.map((appointment) => (
             <AppointmentCard
@@ -81,7 +92,7 @@ const Home = () => {
                   : ''
               }
               image={require('../../assets/Cachorro.png')}
-              action={() => navigation.navigate('DetailAppointment')}
+              action={() => navigation.navigate('DetailAppointment', { id: appointment.agendaCitaId.toString() })}
             />
           ))
         ) : (
@@ -117,12 +128,6 @@ const styles = StyleSheet.create({
     borderBottomColor: '#B2DFDB',
     borderBottomWidth: 1,
 
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2E7D32',
-    marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,

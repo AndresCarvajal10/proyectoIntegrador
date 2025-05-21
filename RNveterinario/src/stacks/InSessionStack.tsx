@@ -7,7 +7,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export type RootStackParamList = {
     Home: undefined;
-    DetailAppointment: undefined;
+    DetailAppointment: {
+        id: string;
+    };
     CreateAppointment: undefined;
 };
 
@@ -22,9 +24,9 @@ const InSessionStack = () => {
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName: string = "help-outline";
 
-                    if (route.name === "Home") {
+                    if (route.name === "Inicio") {
                         iconName = focused ? "home" : "home-outline";
-                    } else if (route.name === "CreateAppointment") {
+                    } else if (route.name === "Citas") {
                         iconName = focused ? "calendar" : "calendar-outline";
                     } else if (route.name === "Salir") {
                         iconName = focused ? "exit" : "exit-outline";
@@ -39,8 +41,8 @@ const InSessionStack = () => {
                 },
             })}
         >
-            <Tab.Screen name="Home" component={StackNavigation} />
-            <Tab.Screen name='CreateAppointment' component={CreateAppointment} />
+            <Tab.Screen name="Inicio" component={StackNavigation} />
+            <Tab.Screen name='Citas' component={CreateAppointment} />
             {/* Verificar el correcto funcionamiento */}
             {/* <Tab.Screen name='Salir' component={Login} /> */}
 

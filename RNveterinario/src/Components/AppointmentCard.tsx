@@ -1,5 +1,6 @@
 import React from 'react'
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface CardAppointmentProps {
     title: string;
@@ -27,6 +28,9 @@ const AppointmentCard = ({ title, date, hour, image, action }: CardAppointmentPr
                                 <Text style={{ fontSize: 12 }}>{hour}</Text>
                             </View>
                         </View>
+                    </View>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Ionicons name="arrow-forward" size={18} color="#000" />
                     </View>
                 </View>
             </View>

@@ -13,6 +13,7 @@ import Input from '../components/Input';
 import FullScreenLoader from '../components/FullScreenLoanding';
 import CustomAlert from '../components/CustomAlert';
 import { RootStackParamList } from '../stacks/OutSessionStack';
+import { Button } from '../components/Button';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -32,18 +33,18 @@ const Login = () => {
   const loginSend = async () => {
     if (!disabledButton) {
       setLoading(true);
-    await login(username, password, (msg) => {
-      setModalMessage(msg);
-      setModalVisible(true);
-    });
-    setLoading(false);
+      await login(username, password, (msg) => {
+        setModalMessage(msg);
+        setModalVisible(true);
+      });
+      setLoading(false);
     };
   }
   return (
     <View style={styles.container}>
       <View style={styles.containerImage}>
         <Image
-          source={require('../../assets/logo-illustration.png')}
+          source={require('../../assets/logo-illustration-no-bg.png')}
           style={styles.image}
         />
       </View>
@@ -68,16 +69,10 @@ const Login = () => {
       />
 
       <View style={styles.buttonWrapper}>
-        <TouchableOpacity
-          disabled={disabledButton}
-          style={[
-            styles.button,
-            { backgroundColor: disabledButton ? '#BDBDBD' : '#43A047' },
-          ]}
-          onPress={loginSend}
-        >
-          <Text style={styles.buttonText}>Iniciar sesión</Text>
-        </TouchableOpacity>
+        <Button
+          disabledButton={disabledButton}
+          text="Iniciar sesión"
+          onPress={loginSend} />
 
         <TouchableOpacity
           onPress={() => navigation.navigate('Registro')}
